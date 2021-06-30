@@ -12,7 +12,7 @@ import java.io.Serializable
 
 
 class QuizFragment : Fragment() {
-    private var userAnswers : Array<String?> = emptyArray()
+    private var uAnswerID: Int = 0
 
     private var page: Int = 0
     private var theme: Int = 0
@@ -54,23 +54,27 @@ class QuizFragment : Fragment() {
                 binding.nextButton.text = "Submit"
             }
         }
-
-        binding.radioGroup.setOnCheckedChangeListener { _, _ ->
-            //userAnswers[page] = view.findViewById<RadioButton>(checkedId).text.toString()
-            binding.nextButton.isEnabled = true
-        }
-
-
-        binding.nextButton.setOnClickListener{
-            //val checkedId: Int = binding.radioGroup.checkedRadioButtonId
-            //val index = binding.radioGroup.indexOfChild(view.findViewById<RadioButton>(checkedId))
-            //userAnswers[page] = binding.radioGroup.indexOfChild(view.findViewById<RadioButton>(checkedId)).toString()
-            if(page == pageCount-1) {
-                position?.onSubmit(userAnswers)
-            } else {
-                position?.onNextQuestion(userAnswers)
+        binding?.radioGroup?.setOnCheckedChangeListener { _, checkedId ->
+            run {
+                binding?.nextButton?.isEnabled = true
+                when (checkedId) {
+                    binding?.optionOne?.id -> uAnswerID = 0
+                    binding?.optionTwo?.id -> uAnswerID = 1
+                    binding?.optionThree?.id -> uAnswerID = 2
+                    binding?.optionFour?.id -> uAnswerID = 3
+                    binding?.optionFive?.id -> uAnswerID = 4
+                }
             }
         }
+
+        binding.nextButton.setOnClickListener{
+            if(page == pageCount-1) {
+                position?.onSubmit(uAnswerID, page-1)
+            } else {
+                position?.onNextQuestion(uAnswerID, page-1)
+            }
+        }
+
         binding.previousButton.setOnClickListener {
             position?.onPreviosQuestion()
         }

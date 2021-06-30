@@ -12,11 +12,18 @@ import com.rsschool.quiz.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() , Communicator{
 
-    private var uAnswers = arrayOfNulls<String>(5)
+    private var userAnswers = mutableListOf(-1, -1, -1, -1, -1)
     private lateinit var binding: ActivityMainBinding
     private lateinit var viewPager: ViewPager2
     private lateinit var fragmentList:List<Fragment>
-    private val rightAnswers = arrayOf("1", "1", "2", "2", "2")
+    private val rightAnswers = listOf(0, 1, 3, 1, 3)
+    private val statusBarColors = listOf(
+        R.color.deep_orange_100_dark
+        ,R.color.yellow_100_dark
+        ,R.color.deep_purple_100_dark
+        ,R.color.light_green_100_dark
+        ,R.color.cyan_100_dark
+        ,R.color.deep_purple_100_dark)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,6 +35,8 @@ class MainActivity : AppCompatActivity() , Communicator{
         fragmentList = getFragmentList()
         viewPager.adapter = ViewPagerAdapter(this,fragmentList)
         viewPager.offscreenPageLimit = fragmentList.size
+
+        viewPager.isUserInputEnabled = false
 
         viewPager.registerOnPageChangeCallback(object:ViewPager2.OnPageChangeCallback(){
             override fun onPageSelected(position: Int) {
@@ -47,7 +56,7 @@ class MainActivity : AppCompatActivity() , Communicator{
             QuizFragment.newInstance(3, BaseOfQuiz.Third, R.style.Theme_Quiz_Third),
             QuizFragment.newInstance(4, BaseOfQuiz.Fourth, R.style.Theme_Quiz_Fourth),
             QuizFragment.newInstance(5, BaseOfQuiz.Fifth, R.style.Theme_Quiz_Fifth),
-            ResultFragment.newInstance(0,R.style.Theme_Quiz_First)
+            ResultFragment.newInstance(0, R.style.Theme_Quiz_Third)
         )
     }
     inner class ViewPagerAdapter(fa: FragmentActivity,var fragmentList:List<Fragment>) : FragmentStateAdapter(fa){
@@ -69,8 +78,8 @@ class MainActivity : AppCompatActivity() , Communicator{
         }
     }
 
-    override fun onNextQuestion(answer: Array<String?>){
-        uAnswers[viewPager.currentItem] = answer.toString()
+    override fun onNextQuestion(answer: Int, position: Int){
+        userAnswers[position] = answer
         ++viewPager.currentItem
     }
 
@@ -78,16 +87,30 @@ class MainActivity : AppCompatActivity() , Communicator{
         --viewPager.currentItem
     }
 
-    override fun onSubmit(answer: Array<String?>) {
+    override fun onSubmit(answer: Int, position: Int) {
         val fragmentResult = fragmentList[fragmentList.size-1]
-        uAnswers[viewPager.currentItem] = answer.toString()
-        val rightAnswersCount = answer.filter { rightAnswers.contains(it) }.count()
-        val percent = ((rightAnswersCount.toDouble() / rightAnswers.count()) * 100).toInt()
+        userAnswers[position] = answer
+        var count = 0
+        for (index in userAnswers.indices) {
+            if (userAnswers[index] == rightAnswers[index]) {
+                count++
+            }
+        }
+        count*=20
         if(fragmentResult is ResultFragment) {
-            fragmentResult.arguments = bundleOf("RESULT" to percent)
+            fragmentResult.arguments = bundleOf("RESULT" to count)
             fragmentResult.update()
         }
         ++viewPager.currentItem
     }
+    override fun reboot() {
+        fragmentList = getFragmentList()
 
+        viewPager.also {
+            it.adapter = ViewPagerAdapter(this, fragmentList)
+            it.offscreenPageLimit = fragmentList.size
+            it.currentItem = 0}
+
+        userAnswers = mutableListOf(-1, -1, -1, -1, -1)
+    }
 }
