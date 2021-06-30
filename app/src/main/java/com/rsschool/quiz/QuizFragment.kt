@@ -33,6 +33,7 @@ class QuizFragment : Fragment() {
         return binding.root
     }
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val pageCount = position?.countOfPages() ?:0
@@ -110,7 +111,7 @@ class QuizFragment : Fragment() {
     }
 
     companion object {
-        fun newInstance(page:Int, question: BaseOfQuiz, theme:Int): QuizFragment {
+        fun newInstance(page:Int, question: BaseOfQuiz, theme: Int): QuizFragment {
             val fragment = QuizFragment()
             val args = Bundle()
             args.putInt(THEME, theme)

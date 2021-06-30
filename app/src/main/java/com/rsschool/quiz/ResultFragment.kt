@@ -20,8 +20,6 @@ class ResultFragment : Fragment(){
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val theme = arguments?.getInt(THEME) ?: 0
-        requireContext().theme.applyStyle(theme, true);
         _binding = FragmentResultBinding.inflate(inflater,container,false)
         return binding.root
     }
@@ -63,16 +61,14 @@ class ResultFragment : Fragment(){
     }
 
     companion object {
-        fun newInstance(result:Int, theme:Int): ResultFragment {
+        fun newInstance(result:Int): ResultFragment {
             val fragment = ResultFragment()
             val args = Bundle()
-            args.putInt(THEME, theme)
             args.putInt(RESULT, result)
             fragment.arguments = args
             return fragment
         }
         private const val RESULT = "RESULT"
-        private const val THEME = "THEME"
     }
 
 }

@@ -30,3 +30,4 @@ enum class BaseOfQuiz (
         arrayOf("The Slytherin", "The Hufflepuff", "The Gryffindor", "The Durmstrang", "The Ravenclaw")
     )
 }
+

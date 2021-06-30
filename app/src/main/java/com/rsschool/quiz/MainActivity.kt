@@ -2,6 +2,7 @@ package com.rsschool.quiz
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
@@ -23,7 +24,7 @@ class MainActivity : AppCompatActivity() , Communicator{
         ,R.color.deep_purple_100_dark
         ,R.color.light_green_100_dark
         ,R.color.cyan_100_dark
-        ,R.color.deep_purple_100_dark)
+        ,R.color.white)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,13 +42,29 @@ class MainActivity : AppCompatActivity() , Communicator{
         viewPager.registerOnPageChangeCallback(object:ViewPager2.OnPageChangeCallback(){
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
+                changeColorStatusBar(position)
+
             }
         })
     }
 
+    fun changeColorStatusBar(page: Int){
+        val fragmentQuiz = fragmentList[page]
+        if (fragmentQuiz is QuizFragment) {
+            window.statusBarColor = ResourcesCompat
+                .getColor(resources, statusBarColors[page], null)
+        } else
+            if (fragmentQuiz is ResultFragment) {
+                window.statusBarColor = ResourcesCompat
+                    .getColor(resources, statusBarColors[page], null)
+            }
+    }
+
+
     override fun countOfPages():Int {
         return  requireNotNull(viewPager.adapter).itemCount
     }
+
 
     fun getFragmentList():List<Fragment>{
         return listOf(
@@ -56,7 +73,7 @@ class MainActivity : AppCompatActivity() , Communicator{
             QuizFragment.newInstance(3, BaseOfQuiz.Third, R.style.Theme_Quiz_Third),
             QuizFragment.newInstance(4, BaseOfQuiz.Fourth, R.style.Theme_Quiz_Fourth),
             QuizFragment.newInstance(5, BaseOfQuiz.Fifth, R.style.Theme_Quiz_Fifth),
-            ResultFragment.newInstance(0, R.style.Theme_Quiz_Third)
+            ResultFragment.newInstance(0)
         )
     }
     inner class ViewPagerAdapter(fa: FragmentActivity,var fragmentList:List<Fragment>) : FragmentStateAdapter(fa){
