@@ -120,8 +120,10 @@ class MainActivity : AppCompatActivity() , Communicator{
         }
         ++viewPager.currentItem
     }
+
     override fun reboot() {
         fragmentList = getFragmentList()
+        count = 0
 
         viewPager.also {
             it.adapter = ViewPagerAdapter(this, fragmentList)
@@ -138,7 +140,7 @@ class MainActivity : AppCompatActivity() , Communicator{
         appendLine("1)${BaseOfQuiz.First.question}")
         appendLine("Your answer: ${BaseOfQuiz.First.answers[userAnswers[0]]}")
         appendLine("2)${BaseOfQuiz.Second.question}")
-        appendLine("Your answer: ${BaseOfQuiz.Second.question[userAnswers[1]]}")
+        appendLine("Your answer: ${BaseOfQuiz.Second.answers[userAnswers[1]]}")
         appendLine("3)${BaseOfQuiz.Third.question}")
         appendLine("Your answer: ${BaseOfQuiz.Third.answers[userAnswers[2]]}")
         appendLine("4)${BaseOfQuiz.Fourth.question}")
