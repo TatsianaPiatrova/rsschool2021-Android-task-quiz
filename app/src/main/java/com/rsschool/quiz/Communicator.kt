@@ -6,7 +6,5 @@ interface Communicator {
     fun onSubmit(userResult: Int, position: Int)
     fun countOfPages(): Int
     fun reboot()
-    //TODO: SetUpStatusBar
-    //window.statusBarColor = resources.getColor(statusBarColors[screenCount()])
-    //fun getResult() : String
+    fun share()
 }

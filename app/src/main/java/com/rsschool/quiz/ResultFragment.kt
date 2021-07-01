@@ -31,6 +31,10 @@ class ResultFragment : Fragment(){
             result?.reboot()
         }
 
+        binding.sendMessage.setOnClickListener {
+            result?.share()
+        }
+
         binding.closeApp.setOnClickListener{
             requireActivity().finish();
             exitProcess(0);

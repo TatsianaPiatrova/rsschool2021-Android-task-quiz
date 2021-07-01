@@ -1,5 +1,6 @@
 package com.rsschool.quiz
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
@@ -18,6 +19,7 @@ class MainActivity : AppCompatActivity() , Communicator{
     private lateinit var viewPager: ViewPager2
     private lateinit var fragmentList:List<Fragment>
     private val rightAnswers = listOf(0, 1, 3, 1, 3)
+    var count = 0
     private val statusBarColors = listOf(
         R.color.deep_orange_100_dark
         ,R.color.yellow_100_dark
@@ -43,7 +45,6 @@ class MainActivity : AppCompatActivity() , Communicator{
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
                 changeColorStatusBar(position)
-
             }
         })
     }
@@ -107,7 +108,6 @@ class MainActivity : AppCompatActivity() , Communicator{
     override fun onSubmit(answer: Int, position: Int) {
         val fragmentResult = fragmentList[fragmentList.size-1]
         userAnswers[position] = answer
-        var count = 0
         for (index in userAnswers.indices) {
             if (userAnswers[index] == rightAnswers[index]) {
                 count++
@@ -129,5 +129,27 @@ class MainActivity : AppCompatActivity() , Communicator{
             it.currentItem = 0}
 
         userAnswers = mutableListOf(-1, -1, -1, -1, -1)
+    }
+
+    override fun share() {
+        val result = buildString{
+        append("Your result is ${count} %")
+        append("\n\n")
+        appendLine("1)${BaseOfQuiz.First.question}")
+        appendLine("Your answer: ${BaseOfQuiz.First.answers[userAnswers[0]]}")
+        appendLine("2)${BaseOfQuiz.Second.question}")
+        appendLine("Your answer: ${BaseOfQuiz.Second.question[userAnswers[1]]}")
+        appendLine("3)${BaseOfQuiz.Third.question}")
+        appendLine("Your answer: ${BaseOfQuiz.Third.answers[userAnswers[2]]}")
+        appendLine("4)${BaseOfQuiz.Fourth.question}")
+        appendLine("Your answer: ${BaseOfQuiz.Fourth.answers[userAnswers[3]]}")
+        appendLine("5)${BaseOfQuiz.Fifth.question}")
+        appendLine("Your answer: ${BaseOfQuiz.Fifth.answers[userAnswers[4]]}")
+        }
+        val intent = Intent(Intent.ACTION_SEND)
+        intent.type = "text/plain"
+        intent.putExtra(Intent.EXTRA_SUBJECT, "Results of quiz")
+        intent.putExtra(Intent.EXTRA_TEXT, result)
+        startActivity(intent)
     }
 }
